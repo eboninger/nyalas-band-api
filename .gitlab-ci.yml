@@ -3,10 +3,11 @@ image: node:10.15.3
 
 #This command is run before all the jobs
 before_script:
+  - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
   - npm install
-
-#stages:
-#  - test
+stages:
+  #  - test
+  - deploy
 
 # lint and test are two different jobs in the same stage.
 # This allows us to run these two in parallel and making build faster
@@ -21,3 +22,10 @@ before_script:
 #  stage: test
 #  script:
 #    - npm run test
+
+deployToAWS:
+  only:
+    - master
+  stage: deploy
+  script:
+    - bash deploy/deploy.sh
